@@ -1,5 +1,4 @@
-// var bigInt = require('./bigInt.js');
-var BigNumber = require('./bignumber2.js')
+var Decimal = require('./decimal.js')
 
 // read all stdin into buffer
 var reader = new require('./stdinReader.js').stdinReader();
@@ -59,7 +58,7 @@ function solveUsingArray(n, k) {
 function solve(n, k) {
 
   function getLevel(k) {
-    var i = new BigNumber('0');
+    var i = new Decimal('0');
     var j;
 
     while (true) {
@@ -72,7 +71,8 @@ function solve(n, k) {
     }
   }  
 
-  var level = getLevel(k);
+  // console.log('should be level: ', getLevel(k).valueOf());
+  var level = Decimal.pow(2, Decimal.log2(k).floor()).minus(1);
 
   // console.log('  level:', level.toString())
 
@@ -107,8 +107,8 @@ var caseNo = +reader.readLine();
 
 for(var i = 1; i <= caseNo; i++) {
 	var ary = reader.readLine().split(' ');
-	var n = new BigNumber(ary[0]);
-	var k = new BigNumber(ary[1]);
+	var n = new Decimal(ary[0]);
+	var k = new Decimal(ary[1]);
 
   // var r2 = solveUsingArray(+n.valueOf(), +k.valueOf());
 	var r1 = solve(n, k);
