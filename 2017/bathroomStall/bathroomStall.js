@@ -1,6 +1,23 @@
+// var bigInt = require('./bigInt.js');
+var BigNumber = require('./bignumber2.js')
+
 // read all stdin into buffer
 var reader = new require('./stdinReader.js').stdinReader();
-var BigNumber = require('./bignumber.js');
+
+
+// bigInt.prototype.floor = function() {
+// 	return this.intPart();
+// };
+
+
+// bigInt.prototype.ceil = function() {
+// 	var i = this.intPart();
+// 	if (i.compare(this) === 0) {
+// 		return i;
+// 	} else {
+// 		return i.add(1);
+// 	}
+// };
 
 
 String.prototype.setChar = function (c) {
@@ -25,8 +42,8 @@ function solveUsingArray(n, k) {
 	}
 
 	for(var j = 1; j <= k; j++) {
-		// console.log(stalls);
-		console.log(j, k)
+		console.log(stalls);
+		// console.log(j, k)
 	  assignStall(j === k);
 	}
 
@@ -42,12 +59,13 @@ function solveUsingArray(n, k) {
 function solve(n, k) {
 
   function getLevel(k) {
-    var i = 0;
-    var j = 1;
+    var i = new BigNumber('0');
+    var j;
 
     while (true) {
-      j = i * 2 + 1;
-      if (j >= k) {
+      j = i.times(2).add(1);
+      // console.log('j', j.toString())
+      if (j.comparedTo(k) >= 0) {
         return i;
       }
       i = j;
@@ -55,39 +73,45 @@ function solve(n, k) {
   }  
 
   var level = getLevel(k);
-  var factor = (n - level) / (level + 1);
-  var sets = Math.trunc(factor);
-  var over = (level + 1) * (factor - sets);
 
-  sets = Math.trunc(sets);
+  // console.log('  level:', level.toString())
 
-  console.log('\n\n\n\n\n')
-  console.log('      n:', n)
-  console.log('      k:', k)
-  console.log('  level:', level)
-  console.log(' factor:', factor)
-  console.log('   sets:', sets)
-  console.log('   over:', over)
-  console.log('k-level:', (k - level))
+  var sets = n.minus(level).dividedBy(level.add(1)).floor();
+  var over = n.minus(level).mod(level.add(1));
 
-  if (k - level <= over) {
-    sets++;
+  // console.log('\n\n\n\n\n')
+  // console.log('      n:', n.toString())
+  // console.log('      k:', k.toString())
+  // console.log('  level:', level.toString())
+  // console.log('   sets:', sets.toString())
+  // console.log('   over:', over.toString())
+  // console.log('k-level:', k.minus(level).toString())
+
+
+  if (k.minus(level).comparedTo(over) <= 0) {
+    sets = sets.add(1);
   }
 
-  var val = (sets - 1) / 2;
+  var val = sets.minus(1).dividedBy(2);
 
-  return { min: Math.floor(val), max: Math.ceil(val) };
+  // var q = sets.minus(1).dividedBy(2).valueOf();
+  // var r = sets.minus(1).mod(2).valueOf();
+
+  // console.log('      q:', q)
+  // console.log('      r:', r)
+
+  return { min: val.floor().valueOf(), max: val.ceil().valueOf() };
 }
 
 var caseNo = +reader.readLine();
 
 for(var i = 1; i <= caseNo; i++) {
 	var ary = reader.readLine().split(' ');
-	var n = +ary[0];
-	var k = +ary[1];
+	var n = new BigNumber(ary[0]);
+	var k = new BigNumber(ary[1]);
 
+  // var r2 = solveUsingArray(+n.valueOf(), +k.valueOf());
 	var r1 = solve(n, k);
-	// var r2 = solveUsingArray(n, k);
 	console.log('Case #' + i + ': ' + r1.max + ' ' + r1.min);
 	// console.log('Case #' + i + ': (' + n + ', ' + k + ') ' + r1.max + ' ' + r1.min);
 	// if (r1.max !== r2.max || r1.min !== r2.min) {

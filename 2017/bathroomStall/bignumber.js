@@ -136,3 +136,7 @@ with({$: BigNumber, o: BigNumber.prototype}){
 		return delete this._rounding, this;
 	};
 }
+
+module.exports = {
+  BigNumber: BigNumber
+};
